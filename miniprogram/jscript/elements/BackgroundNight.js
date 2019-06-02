@@ -4,7 +4,7 @@ import PictureLoader from "../../jscript/publibrary/PictureLoader.js"
 export default class BackgroundNight extends Sprit {
   constructor() {
     const nightbg = PictureLoader.Instance().get("bg_night");
-    super(nightbg, 0, 0, window.innerWidth/4, nightbg.height, 0, 0, window.innerWidth, window.innerHeight);
+    super(nightbg, 0, 0, window.innerWidth, nightbg.height, 0, 0, window.innerWidth, window.innerHeight);
   }
   
   keepmoving() {
@@ -12,7 +12,7 @@ export default class BackgroundNight extends Sprit {
     this.srcX += 0.5;
 
     this.draw();
-    if (this.srcX + window.innerWidth / 4 > this.image.width) {
+    if (this.srcX + window.innerWidth > this.image.width) {
       this.srcX = 0;
       return 1;
     }
