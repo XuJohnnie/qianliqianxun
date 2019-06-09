@@ -12,6 +12,7 @@ export const picMap = [
     ["cloud_b", "pics/cloud_b.png"],
     ["ground_c", "pics/ground_c.png"],
     ["cloud_c", "pics/cloud_c.png"],
+    ["ions_all_1", "pics/ions_all_1.png"],
   //  ["ground_d", "pics/ground_d.png"],
   //  ["cloud_d", "pics/cloud_d.png"],
 ];

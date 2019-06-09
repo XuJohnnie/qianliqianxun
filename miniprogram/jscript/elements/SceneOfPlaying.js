@@ -4,12 +4,16 @@ import BackgroundNight from "../elements/BackgroundNight.js"
 import BorderInterface from "./animy/BorderInterface.js"
 import PictureLoader from "../publibrary/PictureLoader.js"
 import Sprite from "../interface/Sprit.js"
+import GlobalData from "../publibrary/GlobaData.js"
+import ScoreMenu from "../elements/widget/ScoreMenu.js";
+import EndGameScore from "./widget/EndGameScore.js"
 
 export default class SceneOfPlaying{
     constructor(){
         this.bird = new FlyingBird();
         this.bgDay = new BackgroundDay();
         this.bgNight = new BackgroundNight();
+        this.scoreMenu = new ScoreMenu();
        
         this.daynight = true;
 
@@ -18,101 +22,135 @@ export default class SceneOfPlaying{
 
         let bgImgTop = PictureLoader.Instance().get("top_day");
         this.bgTop = new Sprite(bgImgTop, 0, 0, window.innerWidth, bgImgTop.height, 0, 0, window.innerWidth, bgImgTop.height);
-        this.offset = 0;
+        this.xoffset = 0;
         this.lyoffset = 0;
         this.ryoffset = 0;
+
+        this.CreatedGroundNum = 0;
+
+        this.crashPause = false;
+        this.resetUI = new EndGameScore();
     }
 
     play(){
-        if (this.daynight == true) {
-            let keepRtn = this.bgDay.keepmoving();
-            if (keepRtn == 2) {
-                this.daynight = false;
-            } else if (keepRtn == 1) {
-                let left = this.bgDay.getLeft();
+        if (this.crashPause == false){
+            if (this.daynight == true) {
+                let keepRtn = this.bgDay.keepmoving();
+                if (keepRtn == 2) {
+                    this.daynight = false;
+                } else if (keepRtn == 1) {
+                    let left = this.bgDay.getLeft();
+                }
+            } else {
+                if (this.bgNight.keepmoving() == 2) {
+                    this.daynight = true;
+                }
             }
-        } else {
-            if (this.bgNight.keepmoving() == 2) {
-                this.daynight = true;
-            }
+        // this.bgTop.draw();
+            this.showBorder();
+            this.bird.flying();
+            this.crashChecking();
+            this.scoreMenu.draw();
         }
-       // this.bgTop.draw();
-        this.showBorder();
+        else{
+            this.resetUI.draw();
+        }
+    }
 
-        this.bird.flying();
+    crashChecking(){
+        let x = this.bird.posX;
+        let y = this.bird.posY;
+        let w = this.bird.posW;
+        let h = this.bird.posH;
+        this.border.forEach((value) => {
+            if (value.isCrash(x, y, w, h)){
+                GlobalData.Instance().set("state", 2);
+                this.crashPause = true;
+            }
+        });
     }
 
     showBorder(){
-        this.offset -= 3;
+        this.xoffset -= 3;
        // this.lyoffset = 0;
-        let offsetStart = this.offset;
+        let offsetStart = this.xoffset;
         let firstWidth = 0;
         let ryoffsetTemp = -1000;
+        let lastYOffset = 0;
       //  this.ryoffset = 0;
         let orderOffset = this.ryoffset;
         let index = 0;
         this.border.forEach((value) => {
-            
             let yoffset = orderOffset - value.getLeftY();
 
             if (index == 0) {
                 firstWidth = value.getWidth();
             }
             else if (index == 1) {
-                ryoffsetTemp = 0-yoffset;//value.getLeftY();
+                ryoffsetTemp = yoffset + value.getLeftY();//value.getLeftY();
             }
 
-            console.log("yoff=" + this.ryoffset + " value.left=" + value.getLeftY() + " value.right=" + value.getRightY() + " yoffset" + yoffset+" xoff="+this.offset+" size="+this.border.length+" index="+index);
             value.offsetX(offsetStart);
             value.offsetY(this.groundYBase + yoffset, this.cloudYBase + yoffset);
+            lastYOffset = this.groundYBase + yoffset, this.cloudYBase + yoffset;
 
             offsetStart += value.getWidth();
             orderOffset = yoffset + value.getRightY();
             value.draw();
             index ++;
         });
-        console.log("offsetstat="+offsetStart+" innerWidth="+window.innerWidth);
+
         if (offsetStart < window.innerWidth){
-            this.addNewBorder(true);
-            console.log("change yoff start=" + ryoffsetTemp);
+            console.log("change yoff start=" + ryoffsetTemp+" last="+lastYOffset+" inner="+window.innerHeight);
             this.ryoffset = ryoffsetTemp;
-            this.offset += firstWidth;
+            this.xoffset += firstWidth;
+
+            let updown = 0;
+            lastYOffset = window.innerHeight - lastYOffset;
+            if (lastYOffset < Math.ceil(window.innerHeight / 7) + 40){
+                updown = 1;
+            }
+            else if(lastYOffset > 220){
+                updown = -1;
+            }
+            this.addNewBorder(true, updown);
         }
     }
 
     initBorder(){
         this.groundYBase = window.innerHeight - 200;
-        this.cloudYBase = window.innerHeight - 200 - 300;
-        /*
-        let border1 = new BorderInterface(PictureLoader.Instance().get("cloud_a"), PictureLoader.Instance().get("ground_a"));
-        border1.setPos(0, this.groundYBase, this.cloudYBase);
-        border1.setYoffset(26, 0);
-        this.border.push(border1);
+        this.cloudYBase = this.groundYBase - 300;
 
-        let border2 = new BorderInterface(PictureLoader.Instance().get("cloud_b"), PictureLoader.Instance().get("ground_b"));
-        border2.setPos(0, this.groundYBase, this.cloudYBase);
-        border2.setYoffset(0, 26);
-        this.border.push(border2);
-
-        let border3 = new BorderInterface(PictureLoader.Instance().get("cloud_c"), PictureLoader.Instance().get("ground_c"));
-        border3.setPos(0, this.groundYBase, this.cloudYBase);
-        border3.setYoffset(5, 5);
-        this.border.push(border3);
-*/
         this.addNewBorder(false);
         this.addNewBorder(false);
         this.addNewBorder(false);
         this.addNewBorder(false);
         this.addNewBorder(false);
     }
-
-    addNewBorder(replace){
+    //<0 need to down, 0:radom; >0: need to up
+    addNewBorder(replace, updown=0){
+        this.CreatedGroundNum++;
+        if (this.CreatedGroundNum > 5 && this.CreatedGroundNum%3 ==0){
+            this.scoreMenu.addScore();
+        }
         if(replace)
         {
             this.border.shift();
         }
         //Math.floor(Math.random()*5)都是生成的0-4之间的随机数，Math.ceil(Math.random()*5)则是生成的1-5之间的随机数
-        let radomNum = Math.ceil(Math.random() * 3);
+        let radomNum = 0;
+        if(updown < 0){
+            radomNum = 2;
+        }
+        else if(updown > 0){
+            radomNum = 1;
+        }
+        else if(replace == false){
+            radomNum = 3;
+        }
+        else{
+            radomNum = Math.ceil(Math.random() * 3);
+        }
       //  console.log("radom="+radomNum);
         switch(radomNum){
             case 1:
@@ -136,7 +174,17 @@ export default class SceneOfPlaying{
         }
     }
 
-    onTouch(){
-        this.bird.upTheBird();
+    onTouchStart(res){
+        if(this.crashPause == false){
+            this.bird.upTheBird();
+        }
+        else{
+            this.resetUI.onTouchStart(res);
+        }
+    }
+    onTouchEnd(res) {
+        if (this.crashPause == true) {
+            this.resetUI.onTouchEnd(res);
+        }
     }
 }

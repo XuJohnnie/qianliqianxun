@@ -56,4 +56,16 @@ export default class BorderInterface{
     getWidth(){
         return this.groundImg.width;
     }
+
+    isCrash(x, y, w, h){
+        let gx = this.ground.posX;
+        let gy = this.ground.posY+(this.leftY>this.rightY?this.leftY:this.rightY);
+        let gw = this.ground.posW;
+        let gh = this.ground.posH;
+        if(((x+w)<=gx || x>=(gx+gw)) || (y>=(gy+gh)||(y+h)<=gy)){
+            return false;
+        }
+        console.log("x="+x+" y="+y+" h="+h+" w="+w+" gx="+gx+" gy="+gy+" gw="+gw+" gh="+gh);
+        return true;
+    }
 }

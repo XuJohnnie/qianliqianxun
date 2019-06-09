@@ -2,6 +2,7 @@ import BackgroundStart from "../elements/BackgroundStart.js"
 import Sprite from "../interface/Sprit.js"
 import PictureLoader from "../publibrary/PictureLoader.js"
 import GlobalData from "../publibrary/GlobaData.js"
+import ButtonStart from "../elements/widget/ButtonStart.js"
 
 export default class SceneOfStart {
     constructor() {
@@ -15,6 +16,8 @@ export default class SceneOfStart {
             , window.innerWidth / 2 - birdupImg.width / 2, window.innerHeight / 2, birdupImg.width, birdupImg.height);
 
         this.index = 0;
+
+        this.btnStart = new ButtonStart();
     }
 
     play() {
@@ -27,9 +30,13 @@ export default class SceneOfStart {
         } else {
             this.index = 0;
         }
+        this.btnStart.draw();
     }
 
-    onTouch(){
-        GlobalData.Instance().set("state", 1);
+    onTouchStart(res){
+        this.btnStart.onTouchStart(res);
+    }
+    onTouchEnd(res) {
+         this.btnStart.onTouchEnd(res);
     }
 }

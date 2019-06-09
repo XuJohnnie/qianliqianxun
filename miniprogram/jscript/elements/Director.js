@@ -14,16 +14,34 @@ export default class Director {
         this.getActiveScene().play();
     }
 
-    onTouch(res) {
-        this.getActiveScene().onTouch();
-        
+    onTouchStart(res) {
+        this.getActiveScene().onTouchStart(res);
+    }
+    onTouchEnd(res) {
+        this.getActiveScene().onTouchEnd(res);
     }
 
     getActiveScene(){
-        if (GlobalData.Instance().get("state") == 0) {
+        let state = GlobalData.Instance().get("state");
+        if (state == 0) {
+            if(this.playScene!=null){
+                this.playScene = null;
+            }
             return this.startScene;
         }
-        else {
+        else if(state == 1){
+            if (this.playScene == null){
+                this.playScene = new SceneOfPlaying();
+            }
+            return this.playScene;
+        }
+        else if(state == 3){
+            this.playScene = null;
+            this.playScene = new SceneOfPlaying();
+            GlobalData.Instance().set("state", 1);
+            return this.playScene;
+        }
+        else{
             return this.playScene;
         }
     }

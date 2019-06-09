@@ -4,7 +4,7 @@ import PictureLoader from "../../jscript/publibrary/PictureLoader.js"
 export default class BackgroundDay extends Sprit{
   constructor(){
     const daybg = PictureLoader.Instance().get("bg_day");
-    super(daybg, 0, 0, window.innerWidth/2, daybg.height, 0, 0, window.innerWidth, window.innerHeight);
+      super(daybg, 0, 0, window.innerWidth / 2, daybg.height, 0, 0, window.innerWidth, window.innerHeight - window.innerHeight/7);
   }
   
   keepmoving(){
