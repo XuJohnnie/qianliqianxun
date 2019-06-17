@@ -7,6 +7,7 @@ import Sprite from "../interface/Sprit.js"
 import GlobalData from "../publibrary/GlobaData.js"
 import ScoreMenu from "../elements/widget/ScoreMenu.js";
 import EndGameScore from "./widget/EndGameScore.js"
+import SoundManager from "../publibrary/SoundManager.js"
 
 export default class SceneOfPlaying{
     constructor(){
@@ -14,6 +15,7 @@ export default class SceneOfPlaying{
         this.bgDay = new BackgroundDay();
         this.bgNight = new BackgroundNight();
         this.scoreMenu = new ScoreMenu();
+        this.scoreMenu.reset(0);
        
         this.daynight = true;
 
@@ -30,9 +32,15 @@ export default class SceneOfPlaying{
 
         this.crashPause = false;
         this.resetUI = new EndGameScore();
+
+        this.firstPlay = false;
     }
 
     play(){
+        if (this.firstPlay == false){
+            this.firstPlay = true;
+            SoundManager.Instance().playBackgroundSound(true);
+        }
         if (this.crashPause == false){
             if (this.daynight == true) {
                 let keepRtn = this.bgDay.keepmoving();
@@ -53,20 +61,31 @@ export default class SceneOfPlaying{
             this.scoreMenu.draw();
         }
         else{
+            this.bgDay.draw();
+            this.scoreMenu.draw();
+            this.showPauseBorder();
+            this.bird.draw();
             this.resetUI.draw();
         }
     }
 
     crashChecking(){
-        let x = this.bird.posX;
-        let y = this.bird.posY;
-        let w = this.bird.posW;
-        let h = this.bird.posH;
+        let x = this.bird.posX+16;
+        let y = this.bird.posY+10;
+        let w = this.bird.posW-13;
+        let h = this.bird.posH-13;
         this.border.forEach((value) => {
             if (value.isCrash(x, y, w, h)){
                 GlobalData.Instance().set("state", 2);
                 this.crashPause = true;
+                SoundManager.Instance().playDieSound(true);
             }
+        });
+    }
+
+    showPauseBorder(){
+        this.border.forEach((value) => {
+            value.draw();
         });
     }
 
@@ -99,7 +118,7 @@ export default class SceneOfPlaying{
             value.draw();
             index ++;
         });
-
+        
         if (offsetStart < window.innerWidth){
             console.log("change yoff start=" + ryoffsetTemp+" last="+lastYOffset+" inner="+window.innerHeight);
             this.ryoffset = ryoffsetTemp;
@@ -119,7 +138,7 @@ export default class SceneOfPlaying{
 
     initBorder(){
         this.groundYBase = window.innerHeight - 200;
-        this.cloudYBase = this.groundYBase - 300;
+        this.cloudYBase = this.groundYBase - 330;
 
         this.addNewBorder(false);
         this.addNewBorder(false);
@@ -129,9 +148,11 @@ export default class SceneOfPlaying{
     }
     //<0 need to down, 0:radom; >0: need to up
     addNewBorder(replace, updown=0){
+        let addMCloud = false;
         this.CreatedGroundNum++;
         if (this.CreatedGroundNum > 5 && this.CreatedGroundNum%3 ==0){
             this.scoreMenu.addScore();
+            addMCloud = true;
         }
         if(replace)
         {
@@ -154,19 +175,19 @@ export default class SceneOfPlaying{
       //  console.log("radom="+radomNum);
         switch(radomNum){
             case 1:
-                let border1 = new BorderInterface(PictureLoader.Instance().get("cloud_a"), PictureLoader.Instance().get("ground_a"));
+                let border1 = new BorderInterface(PictureLoader.Instance().get("cloud_a"), PictureLoader.Instance().get("ground_a"), addMCloud);
                 border1.setPos(0, this.groundYBase, this.cloudYBase);
                 border1.setYoffset(26, 0);
                 this.border.push(border1);
                 break;
             case 2:
-                let border2 = new BorderInterface(PictureLoader.Instance().get("cloud_b"), PictureLoader.Instance().get("ground_b"));
+                let border2 = new BorderInterface(PictureLoader.Instance().get("cloud_b"), PictureLoader.Instance().get("ground_b"), addMCloud);
                 border2.setPos(0, this.groundYBase, this.cloudYBase);
                 border2.setYoffset(0, 26);
                 this.border.push(border2);
                 break;
             case 3:
-                let border3 = new BorderInterface(PictureLoader.Instance().get("cloud_c"), PictureLoader.Instance().get("ground_c"));
+                let border3 = new BorderInterface(PictureLoader.Instance().get("cloud_c"), PictureLoader.Instance().get("ground_c"), addMCloud);
                 border3.setPos(0, this.groundYBase, this.cloudYBase);
                 border3.setYoffset(5, 5);
                 this.border.push(border3);

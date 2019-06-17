@@ -13,6 +13,15 @@ export const picMap = [
     ["ground_c", "pics/ground_c.png"],
     ["cloud_c", "pics/cloud_c.png"],
     ["ions_all_1", "pics/ions_all_1.png"],
+    ["mcloud_1", "pics/mcloud_1.png"],
+    ["mcloud_2", "pics/mcloud_2.png"],
+    ["mcloud_3", "pics/mcloud_3.png"],
+    ["mcloud_4", "pics/mcloud_4.png"],
+    ["mcloud_5", "pics/mcloud_5.png"],
+    ["mcloud_6", "pics/mcloud_6.png"],
+    ["mcloud_7", "pics/mcloud_7.png"],
+    ["sbird_a_up", "pics/sbird_a_up.png"],
+    ["sbird_a_down", "pics/sbird_a_down.png"]
   //  ["ground_d", "pics/ground_d.png"],
   //  ["cloud_d", "pics/cloud_d.png"],
 ];

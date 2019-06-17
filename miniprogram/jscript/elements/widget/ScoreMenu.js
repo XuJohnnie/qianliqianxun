@@ -7,7 +7,7 @@ export default class ScoreMenu extends Sprite{
         const ions = PictureLoader.Instance().get("ions_all_1");
         super(ions, 0, 98, 161, 45, 21, 21, 161, 45);
 
-        this.score = 1;
+        this.score = 0;
     }
 
     draw(){
@@ -21,8 +21,22 @@ export default class ScoreMenu extends Sprite{
         this.ctx.fillText(""+this.score, this.posX + 66, this.posY + 14);
     }
 
+    reset(){
+        this.score = 0;
+        GlobalData.Instance().set("score", this.score);
+        GlobalData.Instance().set("level", 0);
+    }
+
     addScore(){
         this.score++;
         GlobalData.Instance().set("score", this.score);
+        if(this.score %14 == 0){
+            let level = GlobalData.Instance().get("level");
+            if(level == null){
+                level = 0;
+            }
+            level++;
+            GlobalData.Instance().set("level", level);
+        }
     }
 };

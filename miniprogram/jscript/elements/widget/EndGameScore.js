@@ -1,16 +1,19 @@
 import GlobalData from "../../publibrary/GlobaData.js"
 import ButtonRestart from "./ButtonRestart.js";
 
-export default class EndGameScore {
+var WAIT_SHOW_TIME = 45;
+export default class EndGameScore {    
     constructor() {
         this.ctx = GlobalData.Instance().get("ctx");
         this.btnReset = new ButtonRestart();
+
+        this.delayshowbutton = 0;
     }
 
     draw() {
         this.ctx.font = 'bold 20px Arial';
         this.ctx.textAlign = 'left';
-        this.ctx.fillStyle = '#006666';
+        this.ctx.fillStyle = 'rgba(00,66,66,0.7)';//#006666';
         this.ctx.textBaseline = 'top';
         this.ctx.fillRect(window.innerWidth / 10, window.innerHeight / 4, window.innerWidth * 8 / 10, window.innerWidth * 4 / 6) ;
 
@@ -27,13 +30,20 @@ export default class EndGameScore {
        // this.ctx.fillRect(window.innerWidth / 10, window.innerHeight / 4 + (window.innerWidth * 4 / 6)-30, window.innerWidth * 8 / 10, 30);
         this.ctx.fillRect(window.innerWidth / 10, window.innerHeight / 4, window.innerWidth * 8 / 10, 4);
 
-        this.btnReset.draw();
+        this.delayshowbutton++;
+        if (this.delayshowbutton > WAIT_SHOW_TIME){
+            this.btnReset.draw();
+        }
     }
 
     onTouchStart(res) {
-        this.btnReset.onTouchStart(res);
+        if (this.delayshowbutton > WAIT_SHOW_TIME) {
+            this.btnReset.onTouchStart(res);
+        }
     }
     onTouchEnd(res) {
-        this.btnReset.onTouchEnd(res);
+        if (this.delayshowbutton > WAIT_SHOW_TIME) {
+            this.btnReset.onTouchEnd(res);
+        }
     }
 }

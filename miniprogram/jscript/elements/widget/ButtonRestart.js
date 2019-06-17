@@ -5,7 +5,7 @@ import GlobalData from "../../publibrary/GlobaData.js"
 export default class ButtonRestart extends Sprite {
     constructor() {
         const birdDown = PictureLoader.Instance().get("ions_all_1");
-        super(birdDown, 0, 49, 174, 45, window.innerWidth / 2 - 174 / 2, window.innerHeight * 3 / 4, 174, 45);
+        super(birdDown, 0, 49, 174, 45, window.innerWidth / 2 - 174 / 2, window.innerHeight * 5 / 6, 174, 45);
         this.clickDown = false;
     }
 
