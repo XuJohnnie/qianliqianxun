@@ -30,6 +30,7 @@ export default class SceneOfStart {
         } else {
             this.index = 0;
         }
+
         this.btnStart.draw();
     }
 

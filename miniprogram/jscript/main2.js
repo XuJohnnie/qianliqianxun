@@ -1,6 +1,7 @@
 import PictureLoader from "./publibrary/PictureLoader.js"
 import GlobalData from "./publibrary/GlobaData.js"
 import Director from "./elements/Director.js"
+import WXCloudDB from "./publibrary/WXCloudDB.js"
 
 export default class Main2 {
 
@@ -9,10 +10,10 @@ export default class Main2 {
         this.ctx = canvas.getContext('2d');
         GlobalData.Instance().set("ctx", this.ctx);
         GlobalData.Instance().set("canvas", this.canvas);
-        this.bgX = 0;
-        this.ctx.fillStyle = '#1aad19' // 矩形颜色
-        //this.ctx.fillRect(0, 0, 100, 100);
-        console.info("Hello world" + this.canvas.width);
+
+       // console.info("Hello world" + this.canvas.width);
+
+        WXCloudDB.Instance();
 
         let loader = PictureLoader.Instance();
         loader.onload(() => this.onResouceLoaded());
@@ -27,31 +28,14 @@ export default class Main2 {
 
     onTouchStart(res) {
         Director.Instance().onTouchStart(res);
-        console.log("touch=" + res);
     }
 
     onTouchEnd(res) {
         Director.Instance().onTouchEnd(res);
-        console.log("touch=" + res);
     }
 
     resetGame() {
-        //let testImage = PictureLoader.Instance().get("bg_day");
-        //this.bgX++;
-        //if (this.bgX > testImage.width)
-        //{
-        // this.bgX = 0;
-        //}
-        //console.log("image="+testImage+" w="+testImage.width);
-        //this.ctx.fillRect(0, 0, 100, 100);
-        //this.ctx.drawImage(testImage, 0, 0, testImage.width, testImage.height, 0, 0, window.innerWidth, window.innerHeight);
-        // this.ctx.draxText("ssss");
-        //let bg = new Background(testImage, this.bgX);
-        //bg.draw();
-
         Director.Instance().working();
-
-        //setTimeout(()=>this.resetGame(), 100);
         requestAnimationFrame(() => this.resetGame());
     }
 };

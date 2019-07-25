@@ -15,6 +15,8 @@ export default class Sprite{
   }
 
   draw(){
+      
+     // this.draw(cvs, ob);
     this.ctx.drawImage(this.image, this.srcX, this.srcY, this.srcW, this.srcH, this.posX, this.posY, this.posW, this.posH);
   }
 }

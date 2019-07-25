@@ -20,8 +20,8 @@ export const picMap = [
     ["mcloud_5", "pics/mcloud_5.png"],
     ["mcloud_6", "pics/mcloud_6.png"],
     ["mcloud_7", "pics/mcloud_7.png"],
+    ["mcloud_8", "pics/mcloud_8.png"],
     ["sbird_a_up", "pics/sbird_a_up.png"],
-    ["sbird_a_down", "pics/sbird_a_down.png"]
-  //  ["ground_d", "pics/ground_d.png"],
-  //  ["cloud_d", "pics/cloud_d.png"],
+    ["sbird_a_down", "pics/sbird_a_down.png"],
+    ["icons", "pics/icons.png"]
 ];

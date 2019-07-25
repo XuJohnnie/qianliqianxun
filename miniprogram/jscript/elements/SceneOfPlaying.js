@@ -11,7 +11,8 @@ import SoundManager from "../publibrary/SoundManager.js"
 
 export default class SceneOfPlaying{
     constructor(){
-        this.bird = new FlyingBird();
+        this.bird = FlyingBird.Instance();
+        this.bird.reset();
         this.bgDay = new BackgroundDay();
         this.bgNight = new BackgroundNight();
         this.scoreMenu = new ScoreMenu();
@@ -20,6 +21,8 @@ export default class SceneOfPlaying{
         this.daynight = true;
 
         this.border = [];
+        BorderInterface.reset();
+        
         this.initBorder();
 
         let bgImgTop = PictureLoader.Instance().get("top_day");
@@ -48,9 +51,10 @@ export default class SceneOfPlaying{
                     this.daynight = false;
                 } else if (keepRtn == 1) {
                     let left = this.bgDay.getLeft();
+                    this.daynight = false;
                 }
             } else {
-                if (this.bgNight.keepmoving() == 2) {
+                if (this.bgNight.keepmoving() == 1) {
                     this.daynight = true;
                 }
             }
@@ -75,10 +79,21 @@ export default class SceneOfPlaying{
         let w = this.bird.posW-13;
         let h = this.bird.posH-13;
         this.border.forEach((value) => {
-            if (value.isCrash(x, y, w, h)){
+            var crashcheck = value.isCrash(x, y, w, h);
+            if (crashcheck == 1|| crashcheck == 2){
+                if(crashcheck == 2)
+                {
+                    if(this.bird.isBirdSafe()){
+                        SoundManager.Instance().playSmallBirdDispierSound();
+                        this.bird.deleteOneFlowBird();
+                        value.setUnCheckMiddle();
+                        return;
+                    }
+                }
                 GlobalData.Instance().set("state", 2);
                 this.crashPause = true;
                 SoundManager.Instance().playDieSound(true);
+                wx.vibrateShort({});
             }
         });
     }
@@ -120,7 +135,7 @@ export default class SceneOfPlaying{
         });
         
         if (offsetStart < window.innerWidth){
-            console.log("change yoff start=" + ryoffsetTemp+" last="+lastYOffset+" inner="+window.innerHeight);
+         //   console.log("change yoff start=" + ryoffsetTemp+" last="+lastYOffset+" inner="+window.innerHeight);
             this.ryoffset = ryoffsetTemp;
             this.xoffset += firstWidth;
 
@@ -138,7 +153,7 @@ export default class SceneOfPlaying{
 
     initBorder(){
         this.groundYBase = window.innerHeight - 200;
-        this.cloudYBase = this.groundYBase - 330;
+        this.cloudYBase = this.groundYBase - 300;
 
         this.addNewBorder(false);
         this.addNewBorder(false);
@@ -148,12 +163,22 @@ export default class SceneOfPlaying{
     }
     //<0 need to down, 0:radom; >0: need to up
     addNewBorder(replace, updown=0){
+        //this.cloudYBase = this.groundYBase - 300 + (GlobalData.Instance().get("level") * 8);
+      //  if (GlobalData.Instance().get("level"))
+       // console.log("22222222222222222ybase" + this.cloudYBase + " level=" + GlobalData.Instance().get("level") );
         let addMCloud = false;
         this.CreatedGroundNum++;
-        if (this.CreatedGroundNum > 5 && this.CreatedGroundNum%3 ==0){
-            this.scoreMenu.addScore();
+        if (this.CreatedGroundNum%3 ==1){
+            if (this.CreatedGroundNum > 3){
+                this.scoreMenu.addScore();
+            }
             addMCloud = true;
         }
+        if(this.CreatedGroundNum % 3 == 1){
+          //  this.scoreMenu.addScore();
+          //  addMCloud = true;
+        }
+
         if(replace)
         {
             this.border.shift();

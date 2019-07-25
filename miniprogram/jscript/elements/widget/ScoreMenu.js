@@ -30,7 +30,7 @@ export default class ScoreMenu extends Sprite{
     addScore(){
         this.score++;
         GlobalData.Instance().set("score", this.score);
-        if(this.score %14 == 0){
+        if(this.score %7 == 0){
             let level = GlobalData.Instance().get("level");
             if(level == null){
                 level = 0;

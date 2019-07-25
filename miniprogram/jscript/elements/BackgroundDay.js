@@ -12,11 +12,11 @@ export default class BackgroundDay extends Sprit{
     this.srcX += 0.5;
 
     this.draw();
-    if (this.srcX + window.innerWidth/2 > this.image.width) {
+    if (this.srcX + window.innerWidth > this.image.width) {
       this.srcX = 0;
       return 1;
     }
-    
+  //  console.log("srcx="+this.srcX+" w="+this.image.width);
     if(this.srcX > this.image.width){
       return 2;
     }
