@@ -27,9 +27,15 @@ export default class SoundManager{
         this.audioOfBidDispier.stop();
         this.audioOfBidComming.stop();
         this.audioOfMorning.stop();
+
+        this.isMute = 0;
     }
 
     playBackgroundSound(play=true){
+        if (this.isMute) {
+            return;
+        }
+
         if(play){
             this.audioOfBg.play();
         }
@@ -40,6 +46,10 @@ export default class SoundManager{
     }
 
     playDieSound(play=true){
+        if (this.isMute) {
+            return;
+        }
+
         if(play){
             this.playBackgroundSound(false);
             this.audioOfDie.play();
@@ -51,6 +61,10 @@ export default class SoundManager{
     }
 
     playCachedSound(play=true){
+        if (this.isMute) {
+            return;
+        }
+
         if (play) {
             this.audioOfCached.play();
         }
@@ -61,6 +75,10 @@ export default class SoundManager{
     }
 
     playSmallBirdDispierSound(play = true) {
+        if (this.isMute) {
+            return;
+        }
+
         if (play) {
             this.audioOfBidDispier.play();
         }
@@ -71,6 +89,9 @@ export default class SoundManager{
     }
 
     playSmallBirdCommintSound(play = true) {
+        if (this.isMute) {
+            return;
+        }
         if (play) {
             this.audioOfBidComming.play();
         }
@@ -81,6 +102,9 @@ export default class SoundManager{
     }
 
     playMorningSound(play = true) {
+        if(this.isMute){
+            return;
+        }
         if (play) {
             this.audioOfMorning.play();
         }
@@ -88,6 +112,16 @@ export default class SoundManager{
             this.audioOfMorning.stop();
         }
         console.log("play audioOfCached sound " + play);
+    }
+
+    muteSound(isMute){
+        this.isMute = isMute;
+        if(this.isMute){
+            this.audioOfBg.stop();
+        }
+        else{
+            this.audioOfBg.play();
+        }
     }
 
     static Instance(){

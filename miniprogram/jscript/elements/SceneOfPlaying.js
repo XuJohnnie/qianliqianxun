@@ -65,7 +65,12 @@ export default class SceneOfPlaying{
             this.scoreMenu.draw();
         }
         else{
-            this.bgDay.draw();
+            if(this.daynight == true){
+                this.bgDay.draw();
+            }
+            else{
+                this.bgNight.draw();
+            }
             this.scoreMenu.draw();
             this.showPauseBorder();
             this.bird.draw();
@@ -105,7 +110,22 @@ export default class SceneOfPlaying{
     }
 
     showBorder(){
-        this.xoffset -= 3;
+        var score = GlobalData.Instance().get("score");
+        var speed = 3;
+        if( score > 40)
+        {
+            speed = 4;
+        }
+        else if(score > 70){
+            speed = 5;
+        }
+        else if(score > 100){
+            speed = 6;
+        }
+        else if(score > 150){
+            speed = 7;
+        }
+        this.xoffset -= speed;
        // this.lyoffset = 0;
         let offsetStart = this.xoffset;
         let firstWidth = 0;
@@ -201,19 +221,19 @@ export default class SceneOfPlaying{
         switch(radomNum){
             case 1:
                 let border1 = new BorderInterface(PictureLoader.Instance().get("cloud_a"), PictureLoader.Instance().get("ground_a"), addMCloud);
-                border1.setPos(0, this.groundYBase, this.cloudYBase);
+                border1.setPos(window.innerWidth, this.groundYBase, this.cloudYBase);
                 border1.setYoffset(26, 0);
                 this.border.push(border1);
                 break;
             case 2:
                 let border2 = new BorderInterface(PictureLoader.Instance().get("cloud_b"), PictureLoader.Instance().get("ground_b"), addMCloud);
-                border2.setPos(0, this.groundYBase, this.cloudYBase);
+                border2.setPos(window.innerWidth, this.groundYBase, this.cloudYBase);
                 border2.setYoffset(0, 26);
                 this.border.push(border2);
                 break;
             case 3:
                 let border3 = new BorderInterface(PictureLoader.Instance().get("cloud_c"), PictureLoader.Instance().get("ground_c"), addMCloud);
-                border3.setPos(0, this.groundYBase, this.cloudYBase);
+                border3.setPos(window.innerWidth, this.groundYBase, this.cloudYBase);
                 border3.setYoffset(5, 5);
                 this.border.push(border3);
                 break;

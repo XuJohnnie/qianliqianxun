@@ -143,11 +143,11 @@ export default class BorderInterface{
             var mx = this.mCloud.posX + this.mCloud.posW/2;
             var my = this.mCloud.posY + this.mCloud.posH/2;
 
-            var bx = x+w/2;
+            var bx = x+(w-w/6)/2;
             var by = y+h/2;
 
             var distance = Math.sqrt((mx-bx)*(mx-bx) + (my-by)*(my-by));
-            if (distance < this.radius + (h/2-h/9)){
+            if (distance < this.radius + (h/2-h/13)){
                 if(this.isBird){
                     if(this.show){
                         FlyingBird.Instance().addFlowBird();

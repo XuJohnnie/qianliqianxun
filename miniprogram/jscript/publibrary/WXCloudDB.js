@@ -50,6 +50,7 @@ export default class WXCloudDB{
                 if (res.data.length == 0) {
                     console.log("@@@@@@@@@@@@@@set max score is zero");
                     WXCloudDB.Instance().maxScore = 0;
+                    WXCloudDB.Instance()._dbid = "";
                 } else {
                     WXCloudDB.Instance().maxScore = res.data[0].score;
                     WXCloudDB.Instance()._dbid = res.data[0]._id;
@@ -61,7 +62,7 @@ export default class WXCloudDB{
 
     getTopScoresFromServer(){
         const db = wx.cloud.database();
-        db.collection('bird_rank').limit(10).get({
+        db.collection('bird_rank').orderBy('score', 'desc').limit(50).get({
             success: function (res) {
                 // res.data 是包含以上定义的两条记录的数组
                 WXCloudDB.Instance().topScores = res.data;
@@ -148,7 +149,7 @@ export default class WXCloudDB{
     }
 
     resetRank(){
-        var count = this.topScores;
+        var count = this.topScores.length;
 
         if(count <= 0){
             return;
@@ -172,6 +173,21 @@ export default class WXCloudDB{
                 break;
             }
         }
+    }
+
+    getMyRank(){
+        var count = this.topScores.length;
+        var rank = -1;
+        for(var i=count-1; i>=0; i--){
+            if(this.topScores[i].score <= this.maxScore){
+                rank = i;
+            }
+            else{
+                break;
+            }
+        }
+
+        return rank;
     }
 
     static Instance(){
